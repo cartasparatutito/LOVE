@@ -1,0 +1,70 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background: url('background.jpg') center/cover no-repeat fixed;
+  color: #3a2a1f;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+  max-width: 420px;
+  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  border: 3px solid #d4a373;
+}
+
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  color: #6b3d2e;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  margin-bottom: 40px;
+  color: #8b5a2b;
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+input {
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  border: 2px solid #d4a373;
+  border-radius: 8px;
+  background: #fffef7;
+  color: #3a2a1f;
+  outline: none;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+button {
+  padding: 16px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background: #c44d6a;
+  color: white;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+button:hover {
+  background: #e06b85;
+}

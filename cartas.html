@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartas - Tu Me Manques</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      color: #000;
+    }
+
+    .container { 
+      max-width: 800px; 
+      margin: 80px auto; 
+      padding: 30px; 
+      background: rgba(255,255,255,0.95); 
+      border-radius: 20px; 
+    }
+    .carta-box { 
+      background: #fffef7; 
+      border: 3px solid #d4a373; 
+      border-radius: 15px; 
+      padding: 20px; 
+      margin: 15px 0; 
+      color: #000;
+    }
+    .carta-completa {
+      background: #f5ebd7;
+      border: 2px solid #d4a373;
+      border-radius: 18px;
+      padding: 32px;
+      margin: 20px 0;
+      line-height: 1.9;
+      color: #2a1f0d;
+      font-family: 'Dancing Script', 'Lucida Handwriting', cursive, Georgia, serif;
+      font-style: italic;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.06);
+    }
+    .texto-carta {
+      white-space: pre-wrap;
+      font-size: 1.2rem;
+      color: #2a1f0d;
+      font-family: 'Dancing Script', 'Lucida Handwriting', cursive, Georgia, serif;
+      font-style: italic;
+      letter-spacing: 0.03em;
+    }
+    textarea, button {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dydy Ardilla te escribió! 🐿️ 💐</h1>
+    <p id="modoInfo"></p>
+
+    <!-- Vista Escritor (yo) -->
+    <div id="vista-escritor" style="display: none;">
+      <button onclick="nuevaCarta()" style="padding:15px 30px; background:#6b3d2e; color:white; border:none; border-radius:8px; margin-bottom:20px;">+ Nueva Carta</button>
+      <div id="lista-escritor"></div>
+    </div>
+
+    <!-- Vista Lector (tutito) -->
+    <div id="vista-lector" style="display: none;">
+      <div id="lista-lector"></div>
+      <div id="carta-completa" class="carta-completa" style="display: none;">
+        <h2 id="titulo-completo"></h2>
+        <p id="fecha-completa" style="opacity:0.7;"></p>
+        <p id="texto-completo" class="texto-carta"></p>
+        <button onclick="volverALaLista()" style="margin-top:20px; padding:12px 25px; background:#6b3d2e; color:white; border:none; border-radius:8px;">← Volver a la lista</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cartas = JSON.parse(localStorage.getItem('cartas')) || [];
+    const soyYo = localStorage.getItem("usuarioActual") === "yo";
+
+
+    function guardar() {
+      localStorage.setItem('cartas', JSON.stringify(cartas));
+    }
+
+    function nuevaCarta() {
+      const titulo = prompt("Título de la carta:", "Mi carta para ti");
+      if (!titulo) return;
+      const texto = prompt("Escribe la carta completa:");
+      if (!texto) return;
+
+      cartas.unshift({
+        titulo: titulo,
+        texto: texto,
+        fecha: new Date().toLocaleDateString('es-ES')
+      });
+
+      guardar();
+      mostrarEscritor();
+      alert("✅ Carta guardada correctamente");
+    }
+
+    function mostrarEscritor() {
+      const div = document.getElementById('lista-escritor');
+      div.innerHTML = '<h2>Mis cartas enviadas:</h2>';
+
+      if (cartas.length === 0) {
+        div.innerHTML += '<p style="opacity:0.7;">Aún no tienes cartas...</p>';
+        return;
+      }
+
+      cartas.forEach((c, i) => {
+        const box = document.createElement('div');
+        box.className = 'carta-box';
+        box.innerHTML = `
+          <strong>${c.titulo || "Sin título"}</strong> — ${c.fecha}<br><br>
+          <textarea style="width:100%; height:140px;">${c.texto}</textarea><br><br>
+          <button onclick="eliminar(${i})" style="background:#c44d6a;color:white;">Eliminar</button>
+        `;
+        div.appendChild(box);
+      });
+    }
+
+    function eliminar(i) {
+      if (confirm("¿Eliminar esta carta?")) {
+        cartas.splice(i, 1);
+        guardar();
+        mostrarEscritor();
+      }
+    }
+
+    function mostrarLector() {
+      const div = document.getElementById('lista-lector');
+      div.innerHTML = '<h2>Cartas recibidas:</h2>';
+
+      if (cartas.length === 0) {
+        div.innerHTML += '<p style="opacity:0.7;">Todavía no hay cartas...</p>';
+        return;
+      }
+
+      cartas.forEach((c, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'carta-box';
+        btn.style.width = '100%';
+        btn.style.textAlign = 'left';
+        btn.style.cursor = 'pointer';
+        btn.innerHTML = `<strong>${c.titulo || "Sin título"}</strong> — ${c.fecha}`;
+        btn.onclick = () => abrirCarta(i);
+        div.appendChild(btn);
+      });
+    }
+
+    function abrirCarta(i) {
+      const c = cartas[i];
+      document.getElementById('lista-lector').style.display = 'none';
+      const vista = document.getElementById('carta-completa');
+      vista.style.display = 'block';
+
+      document.getElementById('titulo-completo').textContent = c.titulo || "Sin título";
+      document.getElementById('fecha-completa').textContent = c.fecha;
+      document.getElementById('texto-completo').textContent = c.texto;
+    }
+
+    function volverALaLista() {
+      document.getElementById('carta-completa').style.display = 'none';
+      document.getElementById('lista-lector').style.display = 'block';
+    }
+
+    // Iniciar la página
+    if (soyYo) {
+      document.getElementById("vista-escritor").style.display = "block";
+      mostrarEscritor();
+    } else {
+      document.getElementById("vista-lector").style.display = "block";
+      mostrarLector();
+    }
+  </script>
+</body>
+</html>
