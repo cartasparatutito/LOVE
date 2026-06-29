@@ -95,7 +95,7 @@
       const usuarioActual = localStorage.getItem("usuarioActual");
       soyYo = usuarioActual === "yo";
       document.getElementById("modoInfo").textContent = soyYo ? 
-        "Para que no olvides que eres amado..." : "Para que no olvides que eres amado...";
+        "👷 Modo Escritor (Dydy)" : "❤️ Modo Lector (Tutito)";
     }
 
     // Cargar cartas desde Firebase
@@ -157,7 +157,9 @@
       }
     }
 
-
+    function mostrarLector() {
+      const div = document.getElementById('lista-lector');
+      div.innerHTML = '<h2>Cartas recibidas:</h2>';
 
       if (cartas.length === 0) {
         div.innerHTML += '<p style="opacity:0.7;">Todavía no hay cartas...</p>';
